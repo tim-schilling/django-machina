@@ -1,0 +1,12 @@
+Hello,
+
+A user has replied to a topic that you subscribe on:
+"{{ post.topic.subject }}"
+
+View the reply here:
+http://{{ current_site.domain }}{% url 'forum_conversation:topic' topic.forum.slug topic.forum.pk topic.slug topic.pk %}?post={{ post.pk }}#{{ post.pk }}
+
+You can turn off email notifications under the profile pane on the forum.
+
+--
+{{ current_site.name }}
