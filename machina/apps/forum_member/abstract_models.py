@@ -41,7 +41,7 @@ class AbstractForumProfile(models.Model):
         verbose_name=_('Automatically subscribe to topics you create.'), default=False)
 
     notify_subscribed_topics = models.BooleanField(
-        verbose_name=_('Receive en email notification on new replies on subscribed topics.'),
+        verbose_name=_('Receive an email notification on new replies on subscribed topics.'),
         default=False)
 
     class Meta:
