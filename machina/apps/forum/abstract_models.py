@@ -2,6 +2,7 @@
 
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Sum
@@ -75,6 +76,11 @@ class AbstractForum(MPTTModel, DatedModel):
         on_delete=models.SET_NULL, verbose_name=_('Last post'))
     last_post_on = models.DateTimeField(verbose_name=_('Last post added on'), blank=True, null=True)
 
+    # Many users can subscribe to this topic
+    subscribers = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name='forum_subscriptions',
+        blank=True, verbose_name=_('Subscribers'))
+
     # Display options ; these fields can be used to alter the display of the forums in the list of
     # forums.
     display_sub_forum_list = models.BooleanField(
@@ -120,6 +126,14 @@ class AbstractForum(MPTTModel, DatedModel):
         Returns True if the forum is a link.
         """
         return self.type == self.FORUM_LINK
+
+    def has_subscriber(self, user):
+        """
+        Returns True if the given user is a subscriber of this forum.
+        """
+        if not hasattr(self, '_subscribers'):
+            self._subscribers = list(self.subscribers.all())
+        return user in self._subscribers
 
     def clean(self):
         super(AbstractForum, self).clean()
