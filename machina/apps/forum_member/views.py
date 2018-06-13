@@ -5,9 +5,9 @@ from __future__ import unicode_literals
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
@@ -90,7 +90,7 @@ class ForumProfileDetailView(DetailView):
         # Fetches the recent posts added by the considered user
         forums = self.request.forum_permission_handler.get_readable_forums(
             Forum.objects.all(), self.request.user)
-        recent_posts = Post.approved_objects.filter(
+        recent_posts = Post.approved_objects.select_related('topic', 'topic__forum').filter(
             topic__forum__in=forums, poster=self.object.user).order_by('-created')
         context['recent_posts'] = recent_posts[:machina_settings.PROFILE_RECENT_POSTS_NUMBER]
 

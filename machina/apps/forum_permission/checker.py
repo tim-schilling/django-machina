@@ -27,7 +27,7 @@ class ForumPermissionChecker(object):
         """
         Checks if the considered user has given permission for the passed forum.
         """
-        if not self.user.is_anonymous() and not self.user.is_active:
+        if not self.user.is_anonymous and not self.user.is_active:
             # An inactive user cannot have permissions
             return False
         elif self.user and self.user.is_superuser:
@@ -40,7 +40,7 @@ class ForumPermissionChecker(object):
         Returns the list of permission codenames of all permissions for the given forum.
         """
         # An inactive user has no permissions
-        if not self.user.is_anonymous() and not self.user.is_active:
+        if not self.user.is_anonymous and not self.user.is_active:
             return []
 
         user_model = get_user_model()
@@ -54,7 +54,7 @@ class ForumPermissionChecker(object):
                 default_auth_forum_perms = \
                     machina_settings.DEFAULT_AUTHENTICATED_USER_FORUM_PERMISSIONS
 
-                user_kwargs_filter = {'anonymous_user': True} if self.user.is_anonymous() \
+                user_kwargs_filter = {'anonymous_user': True} if self.user.is_anonymous \
                     else {'user': self.user}
 
                 # Fetches the permissions of the considered user for the given forum
@@ -64,25 +64,25 @@ class ForumPermissionChecker(object):
 
                 # Computes the list of permissions that are granted for all the forums
                 globally_granted_user_perms = list(
-                    filter(lambda p: p.has_perm and p.forum is None, user_perms))
+                    filter(lambda p: p.has_perm and p.forum_id is None, user_perms))
                 globally_granted_user_perms = [
                     p.permission.codename for p in globally_granted_user_perms]
 
                 # Computes the list of permissions that are granted on a per-forum basis
                 per_forum_granted_user_perms = list(
-                    filter(lambda p: p.has_perm and p.forum is not None, user_perms))
+                    filter(lambda p: p.has_perm and p.forum_id is not None, user_perms))
                 per_forum_granted_user_perms = [
                     p.permission.codename for p in per_forum_granted_user_perms]
 
                 # Computes the list of permissions that are not granted on a per-forum basis
                 per_forum_nongranted_user_perms = list(
-                    filter(lambda p: not p.has_perm and p.forum is not None, user_perms))
+                    filter(lambda p: not p.has_perm and p.forum_id is not None, user_perms))
                 per_forum_nongranted_user_perms = [
                     p.permission.codename for p in per_forum_nongranted_user_perms]
 
                 # If the considered user have no global permissions, the permissions defined by
                 # the DEFAULT_AUTHENTICATED_USER_FORUM_PERMISSIONS settings are used instead
-                if self.user.is_authenticated() and not globally_granted_user_perms:
+                if self.user.is_authenticated and not globally_granted_user_perms:
                     globally_granted_user_perms = default_auth_forum_perms
 
                 # Finally computes the list of permission codenames that are granted to
@@ -95,25 +95,25 @@ class ForumPermissionChecker(object):
                 perms = granted_user_perms
 
                 # If the user is a registered user, we have to check the permissions
-                # of its groups in order to determine the additional permissions he could
+                # of its groups in order to determine the additional permissions they could
                 # have
-                if not self.user.is_anonymous():
+                if not self.user.is_anonymous:
                     group_perms = GroupForumPermission.objects.select_related() \
                         .filter(**{'group__{}'.format(user_groups_related_name): self.user}) \
                         .filter(Q(forum__isnull=True) | Q(forum=forum))
 
                     globally_granted_group_perms = list(
-                        filter(lambda p: p.has_perm and p.forum is None, group_perms))
+                        filter(lambda p: p.has_perm and p.forum_id is None, group_perms))
                     globally_granted_group_perms = [
                         p.permission.codename for p in globally_granted_group_perms]
 
                     per_forum_granted_group_perms = list(
-                        filter(lambda p: p.has_perm and p.forum is not None, group_perms))
+                        filter(lambda p: p.has_perm and p.forum_id is not None, group_perms))
                     per_forum_granted_group_perms = [
                         p.permission.codename for p in per_forum_granted_group_perms]
 
                     per_forum_nongranted_group_perms = list(
-                        filter(lambda p: not p.has_perm and p.forum is not None, group_perms))
+                        filter(lambda p: not p.has_perm and p.forum_id is not None, group_perms))
                     per_forum_nongranted_group_perms = [
                         p.permission.codename for p in per_forum_nongranted_group_perms]
 

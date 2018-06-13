@@ -7,7 +7,7 @@ import os
 import pytest
 from django.conf import settings
 from django.core.files import File
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from faker import Faker
 
 from machina.core.db.models import get_model
@@ -69,7 +69,7 @@ class TestAttachmentView(BaseClientTestCase):
         for attachment in attachments:
             try:
                 attachment.file.delete()
-            except:
+            except:  # noqa: E722
                 pass
 
     def test_browsing_works(self):

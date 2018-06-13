@@ -1,24 +1,31 @@
 .. image:: https://github.com/ellmetha/django-machina/raw/master/docs/_images/banner.png
+    :target: https://django-machina.readthedocs.org/
 
-.. image:: https://readthedocs.org/projects/django-machina/badge/?style=flat-square&version=stable
+.. image:: https://readthedocs.org/projects/django-machina/badge/?version=stable
     :target: https://django-machina.readthedocs.org/en/stable/
     :alt: Documentation Status
 
-.. image:: https://img.shields.io/pypi/l/django-machina.svg?style=flat-square
+.. image:: https://img.shields.io/pypi/l/django-machina.svg
     :target: https://pypi.python.org/pypi/django-machina/
     :alt: License
 
-.. image:: https://img.shields.io/pypi/v/django-machina.svg?style=flat-square
+.. image:: https://img.shields.io/pypi/pyversions/django-machina.svg
+    :target: https://pypi.python.org/pypi/django-machina
+
+.. image:: https://img.shields.io/pypi/v/django-machina.svg
     :target: https://pypi.python.org/pypi/django-machina/
     :alt: Latest Version
 
-.. image:: https://img.shields.io/travis/ellmetha/django-machina.svg?style=flat-square
+.. image:: https://img.shields.io/travis/ellmetha/django-machina.svg
     :target: https://travis-ci.org/ellmetha/django-machina
     :alt: Build status
 
-.. image:: https://img.shields.io/codecov/c/github/ellmetha/django-machina.svg?style=flat-square
+.. image:: https://img.shields.io/codecov/c/github/ellmetha/django-machina.svg
     :target: https://codecov.io/github/ellmetha/django-machina
     :alt: Codecov status
+
+.. image:: https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg
+   :target: https://saythanks.io/to/ellmetha
 
 |
 
@@ -63,20 +70,16 @@ it to suit your needs.
 Requirements
 ============
 
-Python 2.7+ or 3.3+, Django 1.8+. Please refer to the requirements_ section of the documentation for
+Python 2.7+ or 3.4+, Django 1.11+. Please refer to the requirements_ section of the documentation for
 a full list of dependencies.
 
 .. _requirements: https://django-machina.readthedocs.org/en/latest/getting_started.html#requirements
 
-Demo sites
-==========
+Demo site
+=========
 
-Two demo sites can be tested:
-
-* the `vanilla project <https://vanilla.machina-forum.io/>`_ contains a standard installation of
-  django-machina without customization
-* the `demo project <https://demo.machina-forum.io/>`_ showcases the customization possibilities of
-  django-machina
+A demo sites can be tested at https://vanilla.machina-forum.io. It contains a standard installation
+of django-machina without any customizations.
 
 Authors
 =======

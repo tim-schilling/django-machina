@@ -8,11 +8,11 @@ from django.db import models
 from django.db.models import Q
 from django.utils.encoding import force_text
 from django.utils.encoding import python_2_unicode_compatible
+from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 
 from machina.conf import settings as machina_settings
 from machina.core import validators
-from machina.core.compat import slugify
 from machina.core.loading import get_class
 from machina.models.abstract_models import DatedModel
 from machina.models.fields import MarkupTextField
@@ -98,7 +98,7 @@ class AbstractTopic(DatedModel):
         verbose_name_plural = _('Topics')
 
     def __str__(self):
-        return self.first_post.subject if self.first_post is not None else str(self.id)
+        return self.first_post.subject if self.first_post is not None else self.subject
 
     @property
     def is_topic(self):
@@ -226,7 +226,7 @@ class AbstractPost(DatedModel):
     # A post can be approved before publishing ; defaults to True
     approved = models.BooleanField(verbose_name=_('Approved'), default=True, db_index=True)
 
-    # The user can choose if he wants to display his signature with the content of the post
+    # The user can choose if they want to display their signature with the content of the post
     enable_signature = models.BooleanField(
         verbose_name=_('Attach a signature'), default=True, db_index=True)
 
