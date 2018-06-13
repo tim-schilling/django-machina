@@ -7,18 +7,19 @@ from datetime import timedelta
 from django.contrib.sites.models import Site
 from django.utils import timezone
 
-from machina.apps.forum_member.emails import NotificationEmail
 from machina.core.db.models import get_model
+from machina.core.loading import get_class
 
 
 Post = get_model('forum_conversation', 'Post')
+NotificationEmail = get_class('forum_member.emails', 'NotificationEmail')
 
 
-def send_notifications(interval, email_class=NotificationEmail, context=None):
+def send_notifications(interval, email_class=None, context=None):
     """
     Send notification on email to the user that subscribe on topics.
     """
-
+    email_class = email_class or NotificationEmail
     email = email_class()
 
     if not context:

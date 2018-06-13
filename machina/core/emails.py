@@ -31,10 +31,7 @@ class BaseEmail(object):
         return ' '.join(content.splitlines()).strip()
 
     def __init__(self, from_email=None):
-        if from_email:
-            self.from_email = from_email
-        else:
-            self.from_email = settings.MACHINA_DEFAULT_FROM_EMAIL
+        self.from_email = from_email or settings.MACHINA_DEFAULT_FROM_EMAIL
 
         assert self.from_email, 'DEFAULT_FROM_EMAIL in settings is missing.'
 

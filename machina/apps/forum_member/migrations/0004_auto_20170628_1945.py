@@ -21,6 +21,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='forumprofile',
             name='notify_subscribed_topics',
-            field=models.BooleanField(default=False, verbose_name='Receive en email notification on new replies on subscribed topics.'),
+            field=models.BooleanField(default=False, verbose_name='Receive an email notification on new replies on subscribed topics.'),
         ),
     ]
