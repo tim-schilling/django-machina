@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 New reply on "{{ topic.subject }}"
+=======
+{% load i18n %}{% blocktrans with topic=topic.subject %}New reply on "{{ topic }}"{% endblocktrans %}
+>>>>>>> stianpr/email-notifications
