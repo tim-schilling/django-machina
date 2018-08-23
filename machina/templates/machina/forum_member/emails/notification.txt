@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-Hello,
-
-A user has replied to a topic that you subscribe on:
-"{{ post.topic.subject }}"
-
-View the reply here:
-http://{{ current_site.domain }}{% url 'forum_conversation:topic' topic.forum.slug topic.forum.pk topic.slug topic.pk %}?post={{ post.pk }}#{{ post.pk }}
-
-You can turn off email notifications under the profile pane on the forum.
-=======
 {% load i18n %}{% blocktrans %}Hello,{% endblocktrans %}
 
 {% blocktrans %}A user has replied to a topic that you subscribe to:{% endblocktrans %}
@@ -18,7 +7,6 @@ You can turn off email notifications under the profile pane on the forum.
 http://{{ current_site.domain }}{% url 'forum_conversation:topic' topic.forum.slug topic.forum.pk topic.slug topic.pk %}?post={{ post.pk }}#{{ post.pk }}
 
 {% blocktrans %}You can turn off email notifications under the profile pane on the forum.{% endblocktrans %}
->>>>>>> stianpr/email-notifications
 
 --
 {{ current_site.name }}

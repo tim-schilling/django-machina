@@ -1,18 +1,11 @@
-<<<<<<< HEAD
-=======
 {% load i18n %}
->>>>>>> stianpr/email-notifications
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<<<<<<< HEAD
-  <title>Forum notification</title>
-=======
   <title>{% blocktrans %}Forum notification{% endblocktrans %}</title>
->>>>>>> stianpr/email-notifications
   <style type="text/css">
     #outlook a {padding:0;}
     body{width:100% !important; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; margin:0; padding:0;}
@@ -31,18 +24,6 @@
 <table width="100%" cellpadding="0" cellspacing="0" border="0" id="backgroundTable">
 <tr>
   <td align="left" valign="top" style="padding:20px;color:#000000;font-size:14px;">
-<<<<<<< HEAD
-    <h2>Hello,</h2>
-    <p>
-      A user has replied to a topic that you subscribe on:<br/>
-      <strong>"{{ post.topic.subject }}"</strong>
-    </p>
-    <p>
-      <a href="http://{{ current_site.domain }}{% url 'forum_conversation:topic' topic.forum.slug topic.forum.pk topic.slug topic.pk %}?post={{ post.pk }}#{{ post.pk }}">View the reply here</a>
-    </p>
-    <p>
-      <em>You can turn off email notifications under the profile pane on the forum.</em>
-=======
     <h2>{% blocktrans %}Hello,{% endblocktrans %}</h2>
     <p>
       {% blocktrans %}
@@ -60,7 +41,6 @@
           You can turn off email notifications under the profile pane on the forum.
         {% endblocktrans %}
       </em>
->>>>>>> stianpr/email-notifications
     </p>
     <p style="padding-top:10px;color:#888888;border-top:solid 1px #888888">
       {{ current_site.name }}
