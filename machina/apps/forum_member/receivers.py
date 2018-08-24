@@ -8,6 +8,7 @@ from django.db.models import F
 from django.db.models.signals import post_delete
 from django.db.models.signals import post_save
 from django.db.models.signals import pre_save
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from machina.core.db.models import get_model
@@ -16,7 +17,23 @@ from machina.core.db.models import get_model
 User = get_user_model()
 
 Post = get_model('forum_conversation', 'Post')
+Topic = get_model('forum_conversation', 'Topic')
 ForumProfile = get_model('forum_member', 'ForumProfile')
+
+
+@receiver(post_save, sender=Topic)
+def auto_subscribe(sender, instance, created, **kwargs):
+    """ When a new topic is posted, subscribes all the subscriber of its forum to it.
+
+    This receiver handles automatically subscribing a user to a topic, if they are
+    subscribed to the forum in which the topic was created
+    """
+    if not created:
+        # Only new topics should be considered
+        return
+
+    for subscriber in instance.forum.subscribers.all():
+        instance.subscribers.add(subscriber)
 
 
 @receiver(pre_save, sender=Post)

@@ -242,6 +242,28 @@ class PermissionHandler(object):
         return user.is_authenticated and topic.has_subscriber(user) \
             and self._perform_basic_permission_check(topic.forum, user, 'can_read_forum')
 
+    # Forum subscription
+
+    def can_subscribe_to_forum(self, forum, user):
+        """
+        Given a forum, checks whether the user can add it to his subscription list.
+        """
+        # A user can subscribe to forums if he is authenticated and if he has the permission to read
+        # them. Of course a user can subscribe only if he has not already subscribed to
+        # the considered forum.
+        return user.is_authenticated() and not forum.has_subscriber(user) \
+            and self._perform_basic_permission_check(forum, user, 'can_read_forum')
+
+    def can_unsubscribe_from_forum(self, forum, user):
+        """
+        Given a forum, checks whether the user can remove it from his subscription list.
+        """
+        # A user can unsubscribe from forums if he is authenticated and if he has the permission to
+        # read them. Of course a user can unsubscribe only if he is already a subscriber of
+        # the considered forum.
+        return user.is_authenticated() and forum.has_subscriber(user) \
+            and self._perform_basic_permission_check(forum, user, 'can_read_forum')
+
     # Moderation
 
     def get_moderation_queue_forums(self, user):
