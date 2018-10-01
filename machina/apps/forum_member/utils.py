@@ -15,7 +15,7 @@ Post = get_model('forum_conversation', 'Post')
 NotificationEmail = get_class('forum_member.emails', 'NotificationEmail')
 
 
-def send_notifications(interval, email_class=None, context=None):
+def send_notifications(email_class=None, context=None):
     """
     Send notification on email to the user that subscribe on topics.
     """
@@ -25,8 +25,7 @@ def send_notifications(interval, email_class=None, context=None):
     if not context:
         context = {}
 
-    time_ago = timezone.now() - timedelta(seconds=interval)
-    for post in Post.objects.filter(created__gt=time_ago):
+    for post in Post.objects.filter(approved=True, notifications_sent=False):
         users = post.topic.subscribers.filter(
             forum_profile__notify_subscribed_topics=True,
             forum_profile__user__email__isnull=False
@@ -41,3 +40,6 @@ def send_notifications(interval, email_class=None, context=None):
                 'current_site': Site.objects.get_current(),
             })
             email.send([user.email], email_context)
+
+        post.notifications_sent = True
+        post.save()
