@@ -27,6 +27,10 @@ USER_DISPLAY_NAME_METHOD = getattr(
     'MACHINA_USER_DISPLAY_NAME_METHOD',
     'get_username',
 )
+DEFAULT_FROM_EMAIL = getattr(
+    settings, 'MACHINA_DEFAULT_FROM_EMAIL', settings.DEFAULT_FROM_EMAIL)
+ENABLE_EMAIL_NOTIFICATIONS = getattr(settings, 'MACHINA_ENABLE_EMAIL_NOTIFICATIONS', False)
+
 
 # Forum
 FORUM_IMAGE_UPLOAD_TO = getattr(settings, 'MACHINA_FORUM_IMAGE_UPLOAD_TO', 'machina/forum_images')

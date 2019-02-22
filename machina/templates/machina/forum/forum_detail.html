@@ -33,6 +33,13 @@
     {% if user_can_add_topic %}
     <a href="{% url 'forum_conversation:topic_create' forum.slug forum.pk %}" class="btn btn-primary btn-sm"><i class="fa fa-comments fa-lg"></i>&nbsp;{% trans "New topic" %}</a>
     {% endif %}
+    {% get_permission 'can_subscribe_to_forum' forum request.user as user_can_subscribe_to_forum %}
+    {% get_permission 'can_unsubscribe_from_forum' forum request.user as user_can_unsubscribe_from_forum %}
+    {% if user_can_subscribe_to_forum %}
+    <a href="{% url 'forum_member:forum_subscribe' forum.pk %}" class="btn btn-info btn-sm btn-subscription"><i class="fa fa-check">&nbsp;</i>{% trans "Subscribe" %}</a>
+    {% elif user_can_unsubscribe_from_forum %}
+    <a href="{% url 'forum_member:forum_unsubscribe' forum.pk %}" class="btn btn-info btn-sm btn-subscription"><i class="fa fa-times">&nbsp;</i>{% trans "Unsubscribe" %}</a>
+    {% endif %}
   </div>
   <div class="col-12 col-md-8">
     {% if topics|length > 0 and request.user.is_authenticated %}

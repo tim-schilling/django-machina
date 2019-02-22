@@ -22,6 +22,9 @@ class ForumProfileForm(forms.ModelForm):
         if not machina_settings.PROFILE_AVATARS_ENABLED:
             del self.fields["avatar"]
 
+        if not machina_settings.ENABLE_EMAIL_NOTIFICATIONS:
+            del self.fields['notify_subscribed_topics']
+
     class Meta:
         model = ForumProfile
-        fields = ['avatar', 'signature', ]
+        fields = ['avatar', 'signature', 'auto_subscribe_topics', 'notify_subscribed_topics']

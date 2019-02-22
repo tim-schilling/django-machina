@@ -30,6 +30,18 @@
             </div>
           </div>
           <div class="row">
+              <div class="col-md-12">
+                  {% include "partials/form_field_checkbox.html" with field=form.auto_subscribe_topics %}
+              </div>
+          </div>
+          {% if form.notify_subscribed_topics %}
+              <div class="row">
+                  <div class="col-md-12">
+                      {% include "partials/form_field_checkbox.html" with field=form.notify_subscribed_topics %}
+                  </div>
+              </div>
+          {% endif %}
+          <div class="row">
             <div class="col-md-12">
               <div class="form-actions">
                 <input type="submit" class="btn btn-large btn-primary" value="{% trans "Submit" %}" />
