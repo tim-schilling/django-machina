@@ -51,6 +51,9 @@ class AbstractForumProfile(models.Model):
     auto_subscribe_topics = models.BooleanField(
         verbose_name=_('Automatically subscribe to topics you create.'), default=False)
 
+    auto_subscribe_posts = models.BooleanField(
+        verbose_name=_('Automatically subscribe to topics that you post to.'), default=False)
+
     notify_subscribed_topics = models.BooleanField(
         verbose_name=_('Receive an email notification on new replies on subscribed topics.'),
         default=False)

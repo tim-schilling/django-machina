@@ -27,4 +27,4 @@ class ForumProfileForm(forms.ModelForm):
 
     class Meta:
         model = ForumProfile
-        fields = ['avatar', 'signature', 'auto_subscribe_topics', 'notify_subscribed_topics']
+        fields = ['avatar', 'signature', 'auto_subscribe_posts', 'auto_subscribe_topics', 'notify_subscribed_topics']

@@ -124,23 +124,50 @@ def decrease_posts_count_after_post_deletion(sender, instance, **kwargs):
         profile.save()
 
 
-@receiver(post_save, sender=Post)
-def auto_subscribe_to_topic(sender, instance, **kwargs):
+@receiver(post_save, sender=Topic)
+def auto_subscribe_to_topic(sender, instance, raw, created, **kwargs):
     """
     Receiver to handle automatic subscription of created topics.
     """
+    if raw or not created:
+        return
 
     try:
         assert instance.poster_id is not None
-        poster = User.objects.get(pk=instance.poster_id)
+        poster = User.objects.select_related('forum_profile').get(
+            pk=instance.poster_id)
     except AssertionError:
-        # An anonymous post is considered. No auto susbcription is possible.
+        # An anonymous post is considered. No auto subcription is possible.
         return
     except ObjectDoesNotExist:  # pragma: no cover
         # This can happen if a User instance is deleted. In that case the
         # User instance is not available and the receiver should return.
         return
 
-    if (instance.topic.poster == poster and hasattr(poster, 'forum_profile') and
-            poster.forum_profile.auto_subscribe_topics):
+    if hasattr(poster, 'forum_profile'):
+        if poster.forum_profile.auto_subscribe_topics:
+            poster.topic_subscriptions.add(instance)
+
+
+@receiver(post_save, sender=Post)
+def auto_subscribe_to_topic_for_post(sender, instance, raw, created, **kwargs):
+    """
+    Receiver to handle automatic subscription of created topics.
+    """
+    if raw or not created:
+        return
+
+    try:
+        assert instance.poster_id is not None
+        poster = User.objects.select_related('forum_profile').get(
+            pk=instance.poster_id)
+    except AssertionError:
+        # An anonymous post is considered. No auto subcription is possible.
+        return
+    except ObjectDoesNotExist:  # pragma: no cover
+        # This can happen if a User instance is deleted. In that case the
+        # User instance is not available and the receiver should return.
+        return
+
+    if hasattr(poster, 'forum_profile') and poster.forum_profile.auto_subscribe_posts:
         poster.topic_subscriptions.add(instance.topic)

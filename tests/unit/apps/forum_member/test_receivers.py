@@ -153,3 +153,41 @@ class TestAutoSubscribeTopics(object):
         PostFactory.create(topic=topic, poster=u1)
         # Check
         assert topic in u1.topic_subscriptions.all()
+
+
+@pytest.mark.django_db
+class TestAutoSubscribePosts(object):
+    def test_topic_is_not_auto_subscribed_when_setting_is_disabled(self):
+        # Setup
+        u1 = UserFactory.create()
+        u2 = UserFactory.create()
+        top_level_forum = create_forum()
+        # Run
+        topic = create_topic(forum=top_level_forum, poster=u1)
+        PostFactory.create(topic=topic, poster=u1)
+        PostFactory.create(topic=topic, poster=u2)
+        PostFactory.create(topic=topic, poster=u1)
+        # Check
+        assert u1.topic_subscriptions.count() == 0
+        assert u2.topic_subscriptions.count() == 0
+
+    def test_topic_is_auto_subscribed_when_setting_is_enabled(self):
+        # Setup
+        u1 = UserFactory.create()
+        u2 = UserFactory.create()
+        top_level_forum = create_forum()
+        # Create topics to auto create a forum profile
+        topic = create_topic(forum=top_level_forum, poster=u1)
+        PostFactory.create(topic=topic, poster=u1)
+        PostFactory.create(topic=topic, poster=u2)
+        profile = ForumProfile.objects.get(user=u2)
+        profile.auto_subscribe_posts = True
+        profile.save()
+        # Run
+        topic = create_topic(forum=top_level_forum, poster=u1)
+        PostFactory.create(topic=topic, poster=u1)
+        PostFactory.create(topic=topic, poster=u2)
+        PostFactory.create(topic=topic, poster=u1)
+        # Check
+        assert topic in u2.topic_subscriptions.all()
+        assert topic not in u1.topic_subscriptions.all()
