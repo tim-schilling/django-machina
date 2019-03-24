@@ -392,3 +392,210 @@ class TestTopicSubscriptionListView(BaseClientTestCase):
         # Check
         assert response.status_code == 200
         assert list(response.context_data['topics']) == [self.topic_2, ]
+
+
+class TestForumSubscribeView(BaseClientTestCase):
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        # Add some users
+        self.u1 = UserFactory.create()
+        self.g1 = GroupFactory.create()
+        self.u1.groups.add(self.g1)
+        self.user.groups.add(self.g1)
+
+        # Permission handler
+        self.perm_handler = PermissionHandler()
+
+        self.top_level_cat_1 = create_category_forum()
+
+        self.forum_1 = create_forum(parent=self.top_level_cat_1)
+        self.topic_1 = create_topic(forum=self.forum_1, poster=self.u1)
+        PostFactory.create(topic=self.topic_1, poster=self.u1)
+        PostFactory.create(topic=self.topic_1, poster=self.user)
+
+        # Assign some permissions
+        assign_perm('can_read_forum', self.g1, self.top_level_cat_1)
+        assign_perm('can_read_forum', self.g1, self.forum_1)
+
+    def test_browsing_works(self):
+        # Setup
+        correct_url = reverse('forum_member:forum_subscribe', args=(self.forum_1.pk, ))
+        # Run
+        response = self.client.get(correct_url, follow=True)
+        # Check
+        assert response.status_code == 200
+
+    def test_can_add_a_forum_to_the_user_subscription_list(self):
+        # Setup
+        correct_url = reverse('forum_member:forum_subscribe', args=(self.forum_1.pk, ))
+        # Run
+        response = self.client.post(correct_url, follow=False)
+        # Check
+        assert response.status_code == 302
+        assert self.forum_1 in self.user.forum_subscriptions.all()
+
+    def test_cannot_be_browsed_by_anonymous_users(self):
+        # Setup
+        self.client.logout()
+        correct_url = reverse('forum_member:forum_subscribe', args=(self.forum_1.pk, ))
+        # Run
+        response = self.client.get(correct_url, follow=False)
+        # Check
+        assert response.status_code == 302
+
+    def test_cannot_be_browsed_by_users_that_do_not_have_the_appropriate_permission(self):
+        # Setup
+        remove_perm('can_read_forum', self.g1, self.forum_1)
+        correct_url = reverse('forum_member:forum_subscribe', args=(self.forum_1.pk, ))
+        # Run
+        response = self.client.get(correct_url, follow=True)
+        # Check
+        assert response.status_code == 403
+
+    def test_cannot_be_browsed_if_the_user_has_already_subscribed_to_the_forum(self):
+        # Setup
+        self.forum_1.subscribers.add(self.user)
+        correct_url = reverse('forum_member:forum_subscribe', args=(self.forum_1.pk, ))
+        # Run
+        response = self.client.get(correct_url, follow=True)
+        # Check
+        assert response.status_code == 403
+
+
+class TestForumUnsubscribeView(BaseClientTestCase):
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        # Add some users
+        self.u1 = UserFactory.create()
+        self.g1 = GroupFactory.create()
+        self.u1.groups.add(self.g1)
+        self.user.groups.add(self.g1)
+
+        # Permission handler
+        self.perm_handler = PermissionHandler()
+
+        self.top_level_cat_1 = create_category_forum()
+
+        self.forum_1 = create_forum(parent=self.top_level_cat_1)
+        self.topic_1 = create_topic(forum=self.forum_1, poster=self.u1)
+        PostFactory.create(topic=self.topic_1, poster=self.u1)
+        PostFactory.create(topic=self.topic_1, poster=self.user)
+
+        # Assign some permissions
+        assign_perm('can_read_forum', self.g1, self.top_level_cat_1)
+        assign_perm('can_read_forum', self.g1, self.forum_1)
+
+    def test_browsing_works(self):
+        # Setup
+        self.forum_1.subscribers.add(self.user)
+        correct_url = reverse('forum_member:forum_unsubscribe', args=(self.forum_1.pk, ))
+        # Run
+        response = self.client.get(correct_url, follow=True)
+        # Check
+        assert response.status_code == 200
+
+    def test_can_remove_a_forum_from_the_user_subscription_list(self):
+        # Setup
+        self.forum_1.subscribers.add(self.user)
+        correct_url = reverse('forum_member:forum_unsubscribe', args=(self.forum_1.pk, ))
+        # Run
+        response = self.client.post(correct_url, follow=False)
+        # Check
+        assert response.status_code == 302
+        assert not self.user.forum_subscriptions.all()
+
+    def test_cannot_be_browsed_by_anonymous_users(self):
+        # Setup
+        self.client.logout()
+        correct_url = reverse('forum_member:forum_unsubscribe', args=(self.forum_1.pk, ))
+        # Run
+        response = self.client.get(correct_url, follow=False)
+        # Check
+        assert response.status_code == 302
+
+    def test_cannot_be_browsed_by_users_that_do_not_have_the_appropriate_permission(self):
+        # Setup
+        remove_perm('can_read_forum', self.g1, self.forum_1)
+        correct_url = reverse('forum_member:forum_unsubscribe', args=(self.forum_1.pk, ))
+        # Run
+        response = self.client.get(correct_url, follow=True)
+        # Check
+        assert response.status_code == 403
+
+    def test_cannot_be_browsed_if_the_user_has_not_subscribed_to_the_forum(self):
+        # Setup
+        correct_url = reverse('forum_member:forum_unsubscribe', args=(self.forum_1.pk, ))
+        # Run
+        response = self.client.get(correct_url, follow=True)
+        # Check
+        assert response.status_code == 403
+
+
+class TestForumSubscriptionListView(BaseClientTestCase):
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        # Add some users
+        self.u1 = UserFactory.create()
+        self.g1 = GroupFactory.create()
+        self.u1.groups.add(self.g1)
+        self.user.groups.add(self.g1)
+
+        # Permission handler
+        self.perm_handler = PermissionHandler()
+
+        self.top_level_cat_1 = create_category_forum()
+
+        self.forum_1 = create_forum(parent=self.top_level_cat_1)
+        self.forum_2 = create_forum(parent=self.top_level_cat_1)
+        self.forum_3 = create_forum(parent=self.top_level_cat_1)
+
+        self.topic_1 = create_topic(forum=self.forum_2, poster=self.u1)
+        PostFactory.create(topic=self.topic_1, poster=self.u1)
+        PostFactory.create(topic=self.topic_1, poster=self.user)
+
+        self.topic_2 = create_topic(forum=self.forum_1, poster=self.user)
+        PostFactory.create(topic=self.topic_2, poster=self.user)
+        PostFactory.create(topic=self.topic_2, poster=self.u1)
+
+        self.topic_3 = create_topic(forum=self.forum_2, poster=self.u1)
+        PostFactory.create(topic=self.topic_3, poster=self.u1)
+
+        self.topic_4 = create_topic(forum=self.forum_2, poster=self.user)
+        PostFactory.create(topic=self.topic_4, poster=self.user)
+
+        # Assign some permissions
+        assign_perm('can_read_forum', self.g1, self.top_level_cat_1)
+        assign_perm('can_read_forum', self.g1, self.forum_1)
+        assign_perm('can_read_forum', self.g1, self.forum_2)
+        assign_perm('can_see_forum', self.g1, self.top_level_cat_1)
+        assign_perm('can_see_forum', self.g1, self.forum_1)
+        assign_perm('can_see_forum', self.g1, self.forum_2)
+
+    def test_browsing_works(self):
+        # Setup
+        correct_url = reverse('forum_member:user_forum_subscriptions')
+        # Run
+        response = self.client.get(correct_url, follow=True)
+        # Check
+        assert response.status_code == 200
+
+    def test_cannot_be_browsed_by_anonymous_users(self):
+        # Setup
+        correct_url = reverse('forum_member:user_forum_subscriptions')
+        self.client.logout()
+        # Run
+        response = self.client.get(correct_url, follow=False)
+        # Check
+        assert response.status_code == 302
+
+    def test_displays_only_forums_the_user_is_subscribed_to(self):
+        # Setup
+        self.user.forum_subscriptions.add(self.forum_2)
+        correct_url = reverse('forum_member:user_forum_subscriptions')
+        # Run
+        response = self.client.get(correct_url, follow=True)
+        # Check
+        assert response.status_code == 200
+        print(response.context_data['forums'].__dict__)
+        print(response.context_data['forums'].nodes)
+        assert list(response.context_data['forums'].forums) == [self.forum_2, ]

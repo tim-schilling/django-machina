@@ -1,0 +1,16 @@
+{% extends 'board_base.html' %}
+{% load i18n %}
+{% load forum_tags %}
+
+{% block sub_title %}{% trans "Forums that you are subscribed to" %}{% endblock sub_title %}
+
+
+{% block content %}
+<div class="row">
+  <div class="col-12">
+    <h1>{% trans "Forums that you are subscribed to" %}</h1>
+  </div>
+</div>
+{% trans "No forums found." as empty_message %}
+{% forum_list forums %}
+{% endblock content %}

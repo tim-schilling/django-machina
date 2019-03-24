@@ -25,6 +25,7 @@ class ForumMemberURLPatternsFactory(URLPatternsFactory):
     topic_subscribe_view = get_class('forum_member.views', 'TopicSubscribeView')
     topic_unsubscribe_view = get_class('forum_member.views', 'TopicUnsubscribeView')
     topic_subscription_list_view = get_class('forum_member.views', 'TopicSubscriptionListView')
+    forum_subscription_list_view = get_class('forum_member.views', 'ForumSubscriptionListView')
     forum_subscribe_view = get_class('forum_member.views', 'ForumSubscribeView')
     forum_unsubscribe_view = get_class('forum_member.views', 'ForumUnsubscribeView')
 
@@ -62,6 +63,11 @@ class ForumMemberURLPatternsFactory(URLPatternsFactory):
                 name='topic_unsubscribe',
             ),
 
+            path(
+                _('forum_subscriptions/'),
+                self.forum_subscription_list_view.as_view(),
+                name='user_forum_subscriptions'
+            ),
             path(
                 _('forum/<int:pk>/subscribe/'),
                 self.forum_subscribe_view.as_view(),

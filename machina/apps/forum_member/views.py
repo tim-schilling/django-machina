@@ -28,6 +28,7 @@ Post = get_model('forum_conversation', 'Post')
 Topic = get_model('forum_conversation', 'Topic')
 
 ForumProfileForm = get_class('forum_member.forms', 'ForumProfileForm')
+ForumVisibilityContentTree = get_class('forum.visibility', 'ForumVisibilityContentTree')
 
 PermissionRequiredMixin = get_class('forum_permission.viewmixins', 'PermissionRequiredMixin')
 
@@ -236,6 +237,23 @@ class TopicUnsubscribeView(GenericUnsubscribeView):
     def perform_permissions_check(self, user, obj, perms):
         """ Performs the permission check. """
         return self.request.forum_permission_handler.can_unsubscribe_from_topic(obj, user)
+
+
+class ForumSubscriptionListView(LoginRequiredMixin, ListView):
+    """ Provides a list of all forums to which the current user has subscribed. """
+
+    context_object_name = 'forums'
+    model = Forum
+    paginate_by = None
+    template_name = 'forum_member/subscription_forum_list.html'
+
+    def get_queryset(self):
+        """ Returns the list of items for this view. """
+        return ForumVisibilityContentTree.from_forums(
+            self.request.forum_permission_handler.forum_list_filter(
+                self.request.user.forum_subscriptions.all(), self.request.user,
+            ),
+        )
 
 
 class TopicSubscriptionListView(LoginRequiredMixin, ListView):

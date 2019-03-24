@@ -38,7 +38,12 @@
       <div class="float-right controls-link-wrapper">
       {% spaceless %}
       {% if not request.user.is_anonymous %}
-        <a href="{% url 'forum_member:user_subscriptions' %}" class="d-inline-block ml-3"><i class="fas fa-bookmark">&nbsp;</i>{% trans "Subscriptions" %}</a>
+        <div class="dropdown-menu">
+          <a class="d-inline-block ml-3" href="#" data-toggle="dropdown"><i class="fas fa-bookmark">&nbsp;</i>{% trans "Subscriptions" %}</a>
+          <a href="{% url 'forum_member:user_forum_subscriptions' %}" class="d-inline-block ml-3">{% trans "Forums" %}</a>
+          <a href="{% url 'forum_member:user_subscriptions' %}" class="d-inline-block ml-3">{% trans "Topics" %}</a>
+        </div>
+
         <a href="{% url 'forum_member:user_posts' request.user.id %}" class="d-inline-block ml-3"><i class="fas fa-comments">&nbsp;</i>{% trans "View my posts" %}</a>
       {% endif %}
       {% get_permission 'can_access_moderation_queue' request.user as can_access_moderation_queue %}
