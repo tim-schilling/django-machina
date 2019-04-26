@@ -178,7 +178,7 @@ class TestSearchForm(object):
         results = form.search()
         # Check
         assert form.is_valid()
-        assert [r.object for r in results] == [self.post_1, self.post_2, self.post_3, ]
+        assert [r.object for r in results] == [self.post_3, self.post_2, self.post_1, ]
 
     def test_can_search_forum_posts_by_using_the_anonymous_poster_name(self):
         # Setup
@@ -224,4 +224,4 @@ class TestSearchForm(object):
         results = form.search()
         # Check
         assert form.is_valid()
-        assert [r.object for r in results] == [self.post_1, self.post_2, ]
+        assert [r.object for r in results] == [self.post_2, self.post_1, ]

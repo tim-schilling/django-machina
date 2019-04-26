@@ -77,4 +77,4 @@ class SearchForm(FacetedSearchForm):
             forum_ids = self.allowed_forums.values_list('id', flat=True)
             sqs = sqs.filter(forum__in=forum_ids) if forum_ids else sqs.none()
 
-        return sqs
+        return sqs.order_by('-updated')

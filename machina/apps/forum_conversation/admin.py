@@ -31,6 +31,8 @@ class PostAdmin(admin.ModelAdmin):
     raw_id_fields = ('poster', 'topic',)
     search_fields = ('content',)
     list_editable = ('approved',)
+    list_select_related = ('topic__first_post', 'poster')
+    ordering = ['-created']
 
     formfield_overrides = {
         MarkupTextField: {'widget': MarkupTextFieldWidget},
@@ -47,6 +49,8 @@ class TopicAdmin(admin.ModelAdmin):
     raw_id_fields = ('poster', 'subscribers', )
     search_fields = ('subject',)
     list_editable = ('approved',)
+    list_select_related = ('forum', 'first_post', 'last_post')
+    ordering = ['-created']
 
 
 admin.site.register(Topic, TopicAdmin)
