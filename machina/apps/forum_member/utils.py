@@ -2,10 +2,9 @@
 
 from __future__ import unicode_literals
 
-from datetime import timedelta
 
 from django.contrib.sites.models import Site
-from django.utils import timezone
+from django.db.models import Q
 
 from machina.core.db.models import get_model
 from machina.core.loading import get_class
@@ -25,11 +24,16 @@ def send_notifications(email_class=None, context=None):
     if not context:
         context = {}
 
-    for post in Post.objects.filter(approved=True, notifications_sent=False):
+    posts = Post.objects.filter(
+        approved=True,
+        notifications_sent=False,
+    ).select_related('topic__forum')
+    for post in posts:
         users = post.topic.subscribers.filter(
+            ~Q(id=post.poster_id),
             forum_profile__notify_subscribed_topics=True,
-            forum_profile__user__email__isnull=False
-        ).exclude(id=post.poster_id)
+            email__isnull=False
+        )
 
         for user in users:
             email_context = context.copy()
