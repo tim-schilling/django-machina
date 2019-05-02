@@ -23,12 +23,15 @@ ForumProfile = get_model('forum_member', 'ForumProfile')
 
 
 @receiver(post_save, sender=Topic)
-def auto_subscribe(sender, instance, created, **kwargs):
+def auto_subscribe(sender, instance, created, raw, **kwargs):
     """ When a new topic is posted, subscribes all the subscriber of its forum to it.
 
     This receiver handles automatically subscribing a user to a topic, if they are
     subscribed to the forum in which the topic was created
     """
+    if raw:
+        return
+
     if not created:
         # Only new topics should be considered
         return
@@ -38,12 +41,14 @@ def auto_subscribe(sender, instance, created, **kwargs):
 
 
 @receiver(pre_save, sender=Post)
-def increase_posts_count(sender, instance, **kwargs):
+def increase_posts_count(sender, instance, raw, **kwargs):
     """ Increases the member's post count after a post save.
 
     This receiver handles the update of the profile related to the user who is the poster of the
     forum post being created or updated.
     """
+    if raw:
+        return
 
     if instance.poster is None:
         # An anonymous post is considered. No profile can be updated in
@@ -71,12 +76,15 @@ def increase_posts_count(sender, instance, **kwargs):
 
 
 @receiver(pre_save, sender=Post)
-def decrease_posts_count_after_post_unaproval(sender, instance, **kwargs):
+def decrease_posts_count_after_post_unaproval(sender, raw, instance, **kwargs):
     """ Decreases the member's post count after a post unaproval.
 
     This receiver handles the unaproval of a forum post: the posts count associated with the post's
     author is decreased.
     """
+    if raw:
+        return
+
     if not instance.pk:
         # Do not consider posts being created.
         return
